@@ -1,28 +1,75 @@
-# ElectronAngularTutorial
+# About
+This is the code repository for the finished angular+electron setup tutorial
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.0.
+# Tutorial
 
-## Development server
+Setup the base angular project
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```
+npm install -g @angular/cli
+ng new your-app  
+cd your-app
+```
 
-## Code scaffolding
+Add main.js
+```
+// ./main.js
+const {app, BrowserWindow} = require('electron')
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
+let win = null;
 
-## Build
+function createWindow() {
+  // Initialize the window to our specified dimensions
+  win = new BrowserWindow({width: 1000, height: 600});
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+  // Specify entry point
+  win.loadURL('http://localhost:4200');
 
-## Running unit tests
+  // Show dev tools
+  // Remove this line before distributing
+  win.webContents.openDevTools()
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+  // Remove window once app is closed
+  win.on('closed', function () {
+    win = null;
+  });
+}
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+app.on('ready', function () {
 
-## Further help
+  createWindow();
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+});
+
+app.on('activate', () => {
+  if (win === null) {
+    createWindow()
+  }
+})
+
+app.on('window-all-closed', function () {
+  if (process.platform != 'darwin') {
+    app.quit();
+  }
+});
+```
+
+Add main.js to package.json
+
+```
+{
+  ...
+  "main": "main.js",
+  ...
+}
+```
+
+Install electron
+``` npm install -g electron ```
+
+Launch angular ``` npm start ```
+
+Open a seperate terminal in the same directory and run ``` electron . ```
+
+That should do it!
